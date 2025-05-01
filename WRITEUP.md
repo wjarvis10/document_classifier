@@ -4,7 +4,7 @@ This project provides a production-ready pipeline for classifying financial docu
 
 It supports PDFs, images, Word documents, and Excel files and can be easily extended to other document types and industries.
 
----
+I determined that the most reliable way to classify documents was by analyzing their actual text content. I began by building a robust text extraction pipeline that handles various file types, including PDFs, images, Word documents, and Excel files. After reviewing the extracted text, I created a synthetic data generation function to simulate realistic examples for each document type. This synthetic data, combined with real examples, was used to train a Logistic Regression Classifier. I evaluated the model using test_classifier.py and iteratively improved the synthetic data generation process to ensure the classifier learned the right distinctions. After a few refinements, the model achieved strong performance and consistent accuracy across all document types.
 
 ## 🚀 Features
 
