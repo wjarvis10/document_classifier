@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+import logging
 
 # === Load real and synthetic data ===
 real_data = joblib.load("../model/real_labeled_data.pkl")
@@ -32,9 +33,9 @@ pipeline.fit(X_train, y_train)
 
 # === Evaluate ===
 y_pred = pipeline.predict(X_test)
-print("✅ Model trained. Classification report:")
-print(classification_report(y_test, y_pred))
+logging.info("Success: Model trained. Classification report:")
+logging.info(classification_report(y_test, y_pred))
 
 # === Save classifier ===
 joblib.dump(pipeline, "../model/supervised_classifier.pkl")
-print("✅ Model saved to model/supervised_classifier.pkl")
+logging.info("Success: Model saved to model/supervised_classifier.pkl")

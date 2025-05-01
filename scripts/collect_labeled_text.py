@@ -2,13 +2,14 @@ import joblib
 import os
 import sys
 from collections import defaultdict
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from src.text_extract import extract_text
 
 # === Configuration ===
 # Map label keywords to category names
-#  - change based upon industry / file categories
+#  - change/add based upon industry / file categories
 CATEGORY_RULES = {
     "bank": "bank_statement",
     "invoice": "invoice",
@@ -43,4 +44,4 @@ for fname in os.listdir(FILES_DIR):
 
 # Save
 joblib.dump(dict(real_data), OUTPUT_PATH)
-print(f"✅ Saved {sum(len(v) for v in real_data.values())} documents to {OUTPUT_PATH}")
+logging.info(f"Success: Saved {sum(len(v) for v in real_data.values())} documents to {OUTPUT_PATH}")

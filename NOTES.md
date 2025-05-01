@@ -48,8 +48,13 @@ Possible Ideas / Suggestions
 - Set up a CI/CD pipeline for automatic testing and deployment
 - Refactor the codebase to make it more maintainable and scalable
 
-# Work flow
+## Work flow
 
 1. Extract text content from different files
    - Need to handle different file types, but will start with extracting just a few to start (get the pipeline up and running)
 2. Group document using K-means or something else
+
+# Code Info
+
+- All the packages used should be in the requirements.txt file
+- Also use Tesseract OCR, so may need to install: brew install tesseract

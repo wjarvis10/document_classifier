@@ -2,16 +2,20 @@ from werkzeug.datastructures import FileStorage
 from src.text_extract import extract_text
 import joblib
 import os
+import logging
 
 # === Load the trained supervised classifier ===
 model_path = "model/supervised_classifier.pkl"
 
-if os.path.exists(model_path):
+try:
     classifier_model = joblib.load(model_path)
-    print("✅ Supervised classifier loaded.")
-else:
+    logging.info(f"success: Loaded classifier from {model_path}")
+except FileNotFoundError:
     classifier_model = None
-    print("❌ Classifier model not found. Run train_supervised.py first.")
+    logging.error(f"error: Model not found at {model_path}. Did you run train_supervised.py?")
+except Exception as e:
+    classifier_model = None
+    logging.exception(f"error: Unexpected error while loading model: {e}")
 
 def classify_file(file: FileStorage):
     """
@@ -24,10 +28,10 @@ def classify_file(file: FileStorage):
     # Extract text
     text = extract_text(file, file_extension).strip()
     if not text:
-        return "error: unreadable or empty file"
+        return "Error: unreadable or empty file"
 
     if classifier_model is None:
-        return "error: classifier not initialized"
+        return "Error: classifier not initialized"
 
    # Get class probabilities
     probs = classifier_model.predict_proba([text])[0]

@@ -6,3 +6,12 @@ umap-learn
 matplotlib
 pdfplumber
 faker
+joblib
+pandas
+pillow
+python-docx
+openpyxl
+PyMuPDF
+pytesseract
+Faker
+pytest

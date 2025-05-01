@@ -1,7 +1,18 @@
 from flask import Flask, request, jsonify
 from src.classifier import classify_file
+import logging
 
 app = Flask(__name__)
+
+# Global logging config
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("logs/app.log"),     # Write to file
+        logging.StreamHandler()                  # Optional: also log to console
+    ]
+)
 
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'docx', 'xlsx', 'xls'}
 
@@ -24,6 +35,9 @@ def classify_file_route():
     file_class = classify_file(file)
     return jsonify({"file_class": file_class}), 200
 
+@app.route('/health')
+def health():
+    return jsonify({"status": "ok"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

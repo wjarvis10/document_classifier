@@ -2,29 +2,55 @@ import joblib
 import random
 from faker import Faker
 from collections import defaultdict
+import logging
 
 fake = Faker()
 
 def generate_bank_statement():
-    return f"""
+    transaction_types = [
+        "Direct Deposit",
+        "ACH Payment",
+        "Wire Transfer",
+        "Check Deposit",
+        "Debit Card Purchase",
+        "POS Purchase",
+        "Online Transfer",
+        "ATM Withdrawal",
+        "Loan Repayment",
+        "Bank Fee"
+    ]
+
+    num_entries=random.randint(10, 20)
+
+    entries = []
+    for _ in range(num_entries):
+        date = fake.date_this_year()
+        description = random.choice(transaction_types)
+        amount = random.randint(10, 1000)
+        entry = f"{date}\n{description}\n${amount}"
+        entries.append(entry)
+
+
+    header =  f"""
     Bank of {fake.company()}
+    Customer Support: {fake.phone_number()}
+    www.fakebankdomain.com
     Account Holder: {fake.name()}
     Statement Period: 2024-01
-    {fake.date_this_month()} Direct Deposit ${random.randint(100, 1000)}
-    {fake.date_this_month()} Debit Purchase ${random.randint(10, 500)}
-    {fake.date_this_month()} Loan Repayment ${random.randint(200, 800)}
-    {fake.date_this_month()} Wire Transfer ${random.randint(200, 900)}
-    {fake.date_this_month()} ATM Withdrawal ${random.randint(5, 250)}
-    {fake.date_this_month()} POS Purchase ${random.randint(100, 1000)}
-    {fake.date_this_month()} Debit Purchase ${random.randint(10, 500)}
-    End of Statement
+    Date
+    Description
+    Debit ($)
+    Credit ($)
     """.strip()
+
+    return header + "\n".join(entries) + "\nEnd of Statement"
 
 def generate_invoice():
     return f"""
     INVOICE
-    Date: {fake.date_this_year()}
-    To: {fake.name()}
+    Invoice Number: {random.randint(1000, 9000)}
+    Issue Date: {fake.date_this_year()}
+    Invoice To: {fake.name()}
     Item: {fake.bs().title()}
     Quantity: {random.randint(1, 5)}
     Unit Price: ${random.randint(100, 1000)}
@@ -50,7 +76,7 @@ DOCUMENT_GENERATORS = {
     "drivers_license": generate_drivers_license,
 }
 
-SAMPLES_PER_TYPE = 5
+SAMPLES_PER_TYPE = 10
 
 # === Generate data ===
 
@@ -62,4 +88,4 @@ for label, generator in DOCUMENT_GENERATORS.items():
 
 # === Save ===
 joblib.dump(dict(synthetic_data), "../model/synthetic_data.pkl")
-print(f"✅ Saved synthetic data for {len(synthetic_data)} document types.")
+logging.info(f"✅ Saved synthetic data for {len(synthetic_data)} document types.")

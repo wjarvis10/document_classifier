@@ -5,7 +5,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 from docx import Document
 import pandas as pd
 import tempfile
-
+import logging
 
 def extract_text(file, filetype):
     
@@ -18,7 +18,7 @@ def extract_text(file, filetype):
                     text = "\n".join([page.extract_text() or "" for page in pdf.pages])
             return text.strip()
         except Exception as e:
-            print(f"[fallback] pdfplumber failed: {e}, using PyMuPDF")
+            logging.warning(f"[fallback] pdfplumber failed: {e}, using PyMuPDF")
             file.seek(0)
             text = ""
             with fitz.open(stream=file.read(), filetype="pdf") as doc:
@@ -35,7 +35,7 @@ def extract_text(file, filetype):
             image = image.filter(ImageFilter.SHARPEN)
             return pytesseract.image_to_string(image).strip()
         except Exception as e:
-            print(f"[error] image OCR failed: {e}")
+            logging.error(f"[error] image OCR failed: {e}")
             return ""
 
     elif filetype == "docx":
@@ -50,7 +50,7 @@ def extract_text(file, filetype):
                 df = pd.read_excel(tmp.name, dtype=str)
             return df.fillna("").astype(str).agg(" ".join, axis=1).str.cat(sep=" ").strip()
         except Exception as e:
-            print(f"[error] Excel read failed: {e}")
+            logging.error(f"[error] Excel read failed: {e}")
             return ""
     
     else: 

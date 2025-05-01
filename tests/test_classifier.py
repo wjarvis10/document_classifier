@@ -2,6 +2,7 @@ import os
 import pytest
 from werkzeug.datastructures import FileStorage
 import sys
+import logging
 
 # Access src modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -37,11 +38,12 @@ def test_classification(filename, expected_label):
         assert 0.0 <= predicted["confidence"] <= 1.0, "Confidence score should be between 0 and 1"
 
         # Debug info
-        print(f"{filename} → predicted: {predicted['label']} ({predicted['confidence']}), expected: {expected_label}")
+        logging.error(f"{filename} → predicted: {predicted['label']} ({predicted['confidence']}), expected: {expected_label}")
 
         # Check label with confidence-aware logic
         if predicted["label"] != expected_label:
             if predicted["confidence"] < CONFIDENCE_THRESHOLD:
-                pytest.skip(f"{filename} misclassified with low confidence ({predicted['confidence']})")
+                # pytest.skip(f"{filename} misclassified with low confidence ({predicted['confidence']})")
+                assert False, f"{filename} → predicted: {predicted['label']} ({predicted['confidence']}), expected: {expected_label}"
             else:
                 assert False, f"{filename} → predicted: {predicted['label']} ({predicted['confidence']}), expected: {expected_label}"
