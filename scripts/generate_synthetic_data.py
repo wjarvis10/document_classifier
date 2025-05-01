@@ -87,5 +87,5 @@ for label, generator in DOCUMENT_GENERATORS.items():
         synthetic_data[label].append(generator())
 
 # === Save ===
-joblib.dump(dict(synthetic_data), "../model/synthetic_data.pkl")
+joblib.dump(dict(synthetic_data), "model/synthetic_data.pkl")
 logging.info(f"✅ Saved synthetic data for {len(synthetic_data)} document types.")

@@ -7,8 +7,8 @@ from sklearn.metrics import classification_report
 import logging
 
 # === Load real and synthetic data ===
-real_data = joblib.load("../model/real_labeled_data.pkl")
-synthetic_data = joblib.load("../model/synthetic_data.pkl")
+real_data = joblib.load("model/real_labeled_data.pkl")
+synthetic_data = joblib.load("model/synthetic_data.pkl")
 
 # === Combine and flatten ===
 docs, labels = [], []
@@ -37,5 +37,5 @@ logging.info("Success: Model trained. Classification report:")
 logging.info(classification_report(y_test, y_pred))
 
 # === Save classifier ===
-joblib.dump(pipeline, "../model/supervised_classifier.pkl")
+joblib.dump(pipeline, "model/supervised_classifier.pkl")
 logging.info("Success: Model saved to model/supervised_classifier.pkl")

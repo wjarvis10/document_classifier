@@ -16,8 +16,8 @@ CATEGORY_RULES = {
     "licen": "drivers_license",
 }
 
-FILES_DIR = "../files"
-OUTPUT_PATH = "../model/real_labeled_data.pkl"
+FILES_DIR = "files"
+OUTPUT_PATH = "model/real_labeled_data.pkl"
 
 # === Scalable collection ===
 real_data = defaultdict(list)
