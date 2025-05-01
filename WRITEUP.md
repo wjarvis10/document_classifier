@@ -51,6 +51,8 @@ python scripts/generate_synthetic_data.py
 
 This creates realistic fake documents per type and saves them to model/synthetic_data.pkl
 
+- Can change the number of synthetic examples by changing SAMPLES_PER_TYPE in generate_synthetic_data.py
+
 ### 3. Train Supervised Classifier
 
 python scripts/train_supervised_model.py
