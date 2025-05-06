@@ -2,9 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from src.classifier import classify_file
 import logging
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/classify_file": {"origins": "http://localhost:5173"}})
+
+# Ensure logs directory exists
+os.makedirs("logs", exist_ok=True)
 
 # Global logging config
 logging.basicConfig(
