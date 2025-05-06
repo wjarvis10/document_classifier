@@ -5,7 +5,7 @@ import logging
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/classify_file": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/classify_file": {"origins": "https://willsjarvis.com/"}})
 
 # Ensure logs directory exists
 os.makedirs("logs", exist_ok=True)
