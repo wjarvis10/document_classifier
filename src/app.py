@@ -34,8 +34,8 @@ def classify_file_route():
     if not allowed_file(file.filename):
         return jsonify({"error": "File type not allowed"}), 400
 
-    file_class = classify_file(file)
-    return jsonify({"file_class": file_class}), 200
+    file_class, confidence = classify_file(file)
+    return jsonify({"file_class": file_class, "confidence": confidence}), 200
 
 @app.route('/health')
 def health():
