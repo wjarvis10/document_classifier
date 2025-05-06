@@ -39,7 +39,4 @@ def classify_file(file: FileStorage):
     predicted_label = classifier_model.classes_[predicted_index]
     confidence = round(probs[predicted_index], 3)
 
-    return {
-        "label": predicted_label,
-        "confidence": confidence
-    }
+    return predicted_label, confidence

@@ -23,19 +23,23 @@ def allowed_file(filename):
 
 @app.route('/classify_file', methods=['POST'])
 def classify_file_route():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file part in the request"}), 400
 
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part in the request"}), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No selected file"}), 400
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
+        if not allowed_file(file.filename):
+            return jsonify({"error": "File type not allowed"}), 400
 
-    if not allowed_file(file.filename):
-        return jsonify({"error": "File type not allowed"}), 400
+        file_class, confidence = classify_file(file)
+        return jsonify({"file_class": file_class, "confidence": confidence}), 200
 
-    file_class, confidence = classify_file(file)
-    return jsonify({"file_class": file_class, "confidence": confidence}), 200
+    except Exception as e:
+        app.logger.error(f"Classification failed: {e}", exc_info=True)
+        return jsonify({"error": "Internal server error"}), 500
 
 @app.route('/health')
 def health():
