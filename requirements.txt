@@ -16,3 +16,4 @@ PyMuPDF
 pytesseract
 Faker
 gunicorn
+flask-cors
