@@ -1,76 +1,98 @@
-# Heron Coding Challenge - File Classifier
+# Heron File Classifier
 
-## Overview
+This project provides a production-ready pipeline for classifying financial documents (e.g., invoices, bank statements, and driver’s licenses) using text extraction and a supervised machine learning model.
 
-At Heron, we’re using AI to automate document processing workflows in financial services and beyond. Each day, we handle over 100,000 documents that need to be quickly identified and categorised before we can kick off the automations.
+It supports PDFs, images, Word documents, and Excel files and can be easily extended to other document types and industries.
 
-This repository provides a basic endpoint for classifying files by their filenames. However, the current classifier has limitations when it comes to handling poorly named files, processing larger volumes, and adapting to new industries effectively.
+I determined that the most reliable way to classify documents was by analyzing their actual text content. I began by building a robust text extraction pipeline that handles various file types, including PDFs, images, Word documents, and Excel files. After reviewing the extracted text, I created a synthetic data generation function to simulate realistic examples for each document type. This synthetic data, combined with real examples, was used to train a Logistic Regression Classifier. I evaluated the model using test_classifier.py and iteratively improved the synthetic data generation process to ensure the classifier learned the right distinctions. After a few refinements, the model achieved strong performance and consistent accuracy across all document types.
 
-**Your task**: improve this classifier by adding features and optimisations to handle (1) poorly named files, (2) scaling to new industries, and (3) processing larger volumes of documents.
+## 🚀 Features
 
-This is a real-world challenge that allows you to demonstrate your approach to building innovative and scalable AI solutions. We’re excited to see what you come up with! Feel free to take it in any direction you like, but we suggest:
+- Text extraction from `.pdf`, `.jpg`, `.png`, `.docx`, `.xlsx`, and `.xls` files
+- OCR support using Tesseract for scanned documents
+- Synthetic data generation to augment small real-world datasets
+- Trainable classifier using TF-IDF and Logistic Regression
+- REST API using Flask to classify files
+- Automated testing with confidence-based thresholds
+- Logging to file (`logs/app.log`) for observability
 
+---
 
-### Part 1: Enhancing the Classifier
+## 📦 Getting Started
 
-- What are the limitations in the current classifier that's stopping it from scaling?
-- How might you extend the classifier with additional technologies, capabilities, or features?
+### 1. Clone the repository
 
+git clone <repository_url>
+cd heron_classifier
 
-### Part 2: Productionising the Classifier 
+### 2. Set Up the repository
 
-- How can you ensure the classifier is robust and reliable in a production environment?
-- How can you deploy the classifier to make it accessible to other services and users?
+python -m venv venv
+source venv/bin/activate # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
-We encourage you to be creative! Feel free to use any libraries, tools, services, models or frameworks of your choice
+### 3. Install Tesseract OCR
 
-### Possible Ideas / Suggestions
-- Train a classifier to categorize files based on the text content of a file
-- Generate synthetic data to train the classifier on documents from different industries
-- Detect file type and handle other file formats (e.g., Word, Excel)
-- Set up a CI/CD pipeline for automatic testing and deployment
-- Refactor the codebase to make it more maintainable and scalable
+Tesseract is required for OCR-based image classification.
 
-## Marking Criteria
-- **Functionality**: Does the classifier work as expected?
-- **Scalability**: Can the classifier scale to new industries and higher volumes?
-- **Maintainability**: Is the codebase well-structured and easy to maintain?
-- **Creativity**: Are there any innovative or creative solutions to the problem?
-- **Testing**: Are there tests to validate the service's functionality?
-- **Deployment**: Is the classifier ready for deployment in a production environment?
+macOS: brew install tesseract
 
+## Pipeline Overview
 
-## Getting Started
-1. Clone the repository:
-    ```shell
-    git clone <repository_url>
-    cd heron_classifier
-    ```
+### 1. Extract Text from Real Documents
 
-2. Install dependencies:
-    ```shell
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
+python scripts/collect_labeled_text.py
 
-3. Run the Flask app:
-    ```shell
-    python -m src.app
-    ```
+This will extract and label documents in files/ and save them to model/real_labeled_data.pkl
 
-4. Test the classifier using a tool like curl:
-    ```shell
-    curl -X POST -F 'file=@path_to_pdf.pdf' http://127.0.0.1:5000/classify_file
-    ```
+### 2. Generate Synthetic Data
 
-5. Run tests:
-   ```shell
-    pytest
-    ```
+python scripts/generate_synthetic_data.py
 
-## Submission
+This creates realistic fake documents per type and saves them to model/synthetic_data.pkl
 
-Please aim to spend 3 hours on this challenge.
+- Can change the number of synthetic examples by changing SAMPLES_PER_TYPE in generate_synthetic_data.py
 
-Once completed, submit your solution by sharing a link to your forked repository. Please also provide a brief write-up of your ideas, approach, and any instructions needed to run your solution. 
+### 3. Train Supervised Classifier
+
+python scripts/train_supervised_model.py
+
+This loads real + synthetic data, trains a model, and saves it to model/supervised_classifier.pkl
+
+### Run the API Server
+
+python -m src.app
+
+Available endpoints:
+
+- POST /classify_file: Upload a file and receive { label, confidence }
+- GET /health: Health check
+
+### Run Test Suite
+
+pytest tests/
+
+Tests validate document classification with confidence-based logic. Failing tests show predictions and confidence levels.
+
+### Example API Usage (with curl)
+
+curl -X POST -F 'file=@files/invoice_1.pdf' http://127.0.0.1:5000/classify_file
+
+Expected Response:
+
+{
+"file_class": {
+"label": "invoice",
+"confidence": 0.934
+}
+}
+
+## Easily Extend To Other Industries
+
+1. Update CATEGORY_RULES in collect_labeled_text.py
+2. Add new synthetic generators in generate_synthetic_data.py
+3. Retrain and redeploy
+
+## Notes
+
+For best performance, ensure your synthetic examples closely resemble the structure of real-world files.
